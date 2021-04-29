@@ -70,7 +70,11 @@ const App = () => {
   const [timer, setTimer] = useState(0)
   const [isActive, setIsActive] = useState(false)
   const [isPaused, setIsPaused] = useState(false)
-  const increment = useRef(null)
+  const increment = useRef(null);
+
+  let firstClick = null; 
+  let secondClick = null;
+  let difference = null;
 
   const handleStart = () => {
     setIsActive(true)
@@ -81,12 +85,20 @@ const App = () => {
   }
 
   const handlePause = () => {
-    
-
-    clearInterval(increment.current)
-    setIsPaused(false)
+    if(firstClick === null){
+      firstClick = new Date().getMilliseconds();
+    } else if (firstClick && secondClick === null){
+      secondClick = new Date().getMilliseconds();
+    } 
+    difference = Math.abs(secondClick - firstClick);
+    if(difference < 300){
+      firstClick = null;
+      secondClick = null;
+      difference = null;
+      clearInterval(increment.current)
+      setIsPaused(false)
+    }
   }
-
   const handleResume = () => {
     setIsPaused(true)
     increment.current = setInterval(() => {
